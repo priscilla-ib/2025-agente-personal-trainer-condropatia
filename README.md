@@ -93,19 +93,6 @@ O agente pergunta:
 •	Se sim → chama a ação enviaemail_treino
 •	Se não → prossegue normalmente
 ________________________________________
-## Fluxo do Agente (Diagrama)
-\```mermaid
-flowchart TD
-  A[Coleta de dados] --> B[Geração do treino]
-  B --> C[Feedback do usuário]
-  C --> D{Dor ou dificuldade?}
-  D -->|Não| E[Pergunta sobre e-mail]
-  D -->|Sim| F[Ajusta treino automaticamente]
-  E --> G{Enviar e-mail?}
-  G -->|Sim| H[Chama enviaemail_treino]
-  G -->|Não| I[Fim]
-\```
-________________________________________
 # Integração: Envio Automático de Treino por E-mail
 Para permitir que o agente envie o plano de treino diretamente por e-mail, foi criada uma integração entre o Azure AI Foundry e um Logic App com conector do Outlook. A ação utilizada pelo agente chama enviaemail_treino.
 ________________________________________
@@ -120,3 +107,26 @@ ________________________________________
 5.0 E-mails enviados
 5.1 E-mails recebidos
 5.1.1 E-mail detalhado recebido
+________________________________________
+## Fluxo inicial do treino (Diagrama)
+```mermaid
+flowchart TD
+  A[Coleta de dados iniciais] --> B[Geração do treino]
+  B --> C{Deseja receber o treino por e-mail?}
+  C -->|Sim| D[Chama enviaemail_treino]
+  C -->|Não| E[Fim do envio]
+  D --> F[Fim do fluxo]
+  E --> F
+```
+## Fluxo de Feedback e Ajuste (Diagrama)
+```mermaid
+flowchart TD
+  A[Coleta de feedback do usuário] --> B{Houve dor ou dificuldade?}
+  B -->|Sim| C[Ajusta treino automaticamente]
+  B -->|Não| D[Treino mantido]
+  C --> D
+  D --> E{Deseja receber treino atualizado por e-mail?}
+  E -->|Sim| F[Chama enviaemail_treino]
+  E -->|Não| G[Fim do fluxo]
+  F --> G
+```
